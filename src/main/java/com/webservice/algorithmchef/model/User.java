@@ -2,9 +2,14 @@ package com.webservice.algorithmchef.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -29,7 +34,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class User {
+public class User implements UserDetails  {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +58,13 @@ public class User {
 	private String gender;
 	
 	@Column(nullable=false)
-	private LocalDate birthDate;
+	private LocalDateTime birthDate;
+	
+	@Column(nullable = false, columnDefinition = "varchar(255) default 'ROLE_USER'")
+    private String role;
+	
+	@Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+	private boolean isTemporaryPassword;
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
 	@ToString.Exclude
@@ -63,11 +74,23 @@ public class User {
 	@ToString.Exclude
 	private List<UserAllergy> userAllergyList;
 	
-	@OneToMany(mappedBy="user",cascade = CascadeType.ALL,orphanRemoval = true)
-	@ToString.Exclude
-	private List<UserPreference> userPreferenceList;
-	
 	@OneToOne(mappedBy="user",cascade = CascadeType.ALL,orphanRemoval = true)
 	@ToString.Exclude
-	private UserFridge userFridge;
+	private UserPreference userPreference;
+	
+	@OneToMany(mappedBy="user",cascade = CascadeType.ALL,orphanRemoval = true)
+	@ToString.Exclude
+	private List<UserFridge> userFridge;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return Collections.singletonList(new SimpleGrantedAuthority(this.role));
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return this.userId;
+	}
 }
