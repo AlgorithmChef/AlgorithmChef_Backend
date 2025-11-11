@@ -49,7 +49,7 @@ public class EmailService {
 
             String htmlContent = "<html>"
                 + "<body style='font-family: Arial, sans-serif;'>"
-                + "<h2>[밥도둑] 임시 비밀번호 안내</h2>"
+                + "<h2>[알고리듬 셰프] 임시 비밀번호 안내</h2>"
                 + "<p>요청하신 임시 비밀번호입니다. 로그인 후 반드시 비밀번호를 변경해주세요.</p>"
                 + "<div style='background-color: #f4f4f4; padding: 15px; border-radius: 5px; font-size: 18px; font-weight: bold; text-align: center;'>"
                 + tempPassword
