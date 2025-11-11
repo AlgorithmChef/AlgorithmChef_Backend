@@ -34,8 +34,8 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        // 실제 사용하는 로그인/회원가입 경로로 수정해주세요.
-                        .requestMatchers("/auth/login", "/auth/signUp").permitAll()
+                        .requestMatchers("/auth/login", "/auth/signUp", 
+                        		"/auth/findPassword", "/auth/findUserId").permitAll()
                         .anyRequest().authenticated());
 
         http

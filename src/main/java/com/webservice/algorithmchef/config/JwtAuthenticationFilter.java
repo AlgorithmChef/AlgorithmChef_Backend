@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * 💡 임시 비밀번호(status="TEMPORARY") 사용자가 접근할 수 있는 유일한 경로.
      * 이 경로 외의 모든 API 접근은 403 Forbidden을 반환합니다.
      */
-    private static final String ALLOWED_PATH_FOR_TEMP_USER = "/auth/findPassword";
+    private static final String ALLOWED_PATH_FOR_TEMP_USER = "/auth/update-tempPassword";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
