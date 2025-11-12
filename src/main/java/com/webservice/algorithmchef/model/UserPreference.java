@@ -35,6 +35,9 @@ public class UserPreference {
 	@Column
 	private String likedIngredients;
 	
+	@Column
+	private String preferredCuisine;
+	
 	@Column(nullable = false, columnDefinition = "varchar(255) default '보통'")
 	private String spiceLevel;
 	
