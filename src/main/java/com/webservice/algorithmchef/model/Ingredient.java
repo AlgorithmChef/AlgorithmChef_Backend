@@ -33,7 +33,7 @@ public class Ingredient {
 	@Column(nullable = false)
 	private String name;
 	
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private String category;
 	
 	@Column(nullable = false)

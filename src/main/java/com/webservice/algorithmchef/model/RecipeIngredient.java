@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,10 +34,12 @@ public class RecipeIngredient {
 	@JoinColumn(name="recipe_id")
 	private Recipe recipe;
 	
+	@Column(nullable = false)
+	@Lob
+	private String neededIngredients;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="ingredient_id")
 	private Ingredient ingredient;
-	
-	@Column(nullable = false)
-	private int quantity;
+
 }
