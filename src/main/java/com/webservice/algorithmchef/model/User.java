@@ -79,7 +79,7 @@ public class User implements UserDetails  {
 	
 	@OneToMany(mappedBy="user",cascade = CascadeType.ALL,orphanRemoval = true)
 	@ToString.Exclude
-	private List<UserFridge> userFridge;
+	private List<Fridge> userFridge;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

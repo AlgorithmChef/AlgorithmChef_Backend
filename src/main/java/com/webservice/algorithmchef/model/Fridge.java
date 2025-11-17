@@ -1,9 +1,8 @@
 package com.webservice.algorithmchef.model;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-import org.hibernate.annotations.CreationTimestamp;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,24 +26,20 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserFridge {
+public class Fridge {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="fridge_id")
 	private Long id;
 	
-	@CreationTimestamp
-	private LocalDateTime purchaseDate;
-	
-	@Column(nullable = false)
-	private LocalDateTime expiryDate;
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ingredient_id")
-	private Ingredient ingredient;
+	@Column(nullable = false, columnDefinition = "varchar(255) default '나의 냉장고'")
+	private String name;
+	
+	@OneToMany(mappedBy = "fridge",cascade = CascadeType.ALL, orphanRemoval=true)
+	private List<FridgeIngredient> ingredients;
 }

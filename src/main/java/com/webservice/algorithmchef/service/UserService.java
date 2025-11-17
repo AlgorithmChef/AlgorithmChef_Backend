@@ -51,6 +51,7 @@ public class UserService implements UserDetailsService{
 		if(user.getUserHealthGoals() != null) {
 			user.getUserHealthGoals().clear();
 		}
+		
 		List<UserHealthGoal> newHealthGoals = healthGoalIds.stream().map(id ->{
 					HealthGoal goal = healthGoalRepository.findById(id)
 							.orElseThrow(()-> new IllegalArgumentException("해당하는 아이디로 건강 목표를 찾을 수 없습니다."));
