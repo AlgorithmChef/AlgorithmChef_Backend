@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.webservice.algorithmchef.dto.ingredient.IngredientRequest;
-import com.webservice.algorithmchef.dto.ingredient.IngredientResponse;
+import com.webservice.algorithmchef.dto.fridgeingredient.FridgeIngredientRequest;
+import com.webservice.algorithmchef.dto.fridgeingredient.FridgeIngredientResponse;
 import com.webservice.algorithmchef.dto.userfridge.UserFridgeRequest;
 import com.webservice.algorithmchef.dto.userfridge.UserFridgeResponse;
 import com.webservice.algorithmchef.model.Fridge;
@@ -33,7 +33,7 @@ public class UserFridgeService {
 				.orElseThrow(() -> new IllegalArgumentException("접근 권한이 없거나 존재하지 않는 냉장고입니다."));
 		
 		List<FridgeIngredient> newFridgeIngredients = new ArrayList<>();
-		List<IngredientRequest> ingredients = userFridgeRequest.getIngredients();
+		List<FridgeIngredientRequest> ingredients = userFridgeRequest.getIngredients();
 		ingredients.forEach(ingredient -> {
 			Ingredient newIngredient = ingredientRepository.findByName(ingredient.getName())
 					.orElseThrow(()-> new IllegalArgumentException("해당하는 식자재가 없습니다."));
@@ -47,11 +47,11 @@ public class UserFridgeService {
 		});
 		
 		List<FridgeIngredient> savedIngredients = fIngredientRepository.saveAll(newFridgeIngredients);
-		List<IngredientResponse> responseIngredients = savedIngredients.stream().
+		List<FridgeIngredientResponse> responseIngredients = savedIngredients.stream().
 			map(fi ->{
 				LocalDateTime expiredDate = fi.getPurchaseDate()
 						.plusDays(fi.getIngredient().getAvgExpiryDays());
-				return new IngredientResponse(
+				return new FridgeIngredientResponse(
 						fi.getId(),
 						fi.getIngredient().getCategory(),
 						fi.getIngredient().getName(),

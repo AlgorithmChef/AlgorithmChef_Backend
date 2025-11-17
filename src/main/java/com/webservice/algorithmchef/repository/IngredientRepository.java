@@ -2,6 +2,8 @@ package com.webservice.algorithmchef.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.webservice.algorithmchef.model.Ingredient;
@@ -9,4 +11,7 @@ import com.webservice.algorithmchef.model.Ingredient;
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
 	Optional<Ingredient> findByName(String name);
+	Page<Ingredient> findAll(Pageable pageable);
+	Page<Ingredient> findByNameContaining(String name,Pageable pageable);
+	Page<Ingredient> findByCategory(String category,Pageable pageable);
 }

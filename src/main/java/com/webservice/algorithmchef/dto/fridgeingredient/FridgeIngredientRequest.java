@@ -1,4 +1,4 @@
-package com.webservice.algorithmchef.dto.ingredient;
+package com.webservice.algorithmchef.dto.fridgeingredient;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class IngredientRequest {
+public class FridgeIngredientRequest {
 
 	public String name;
 	public LocalDateTime purchaseDate;

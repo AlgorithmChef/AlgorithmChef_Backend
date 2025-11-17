@@ -1,8 +1,7 @@
 package com.webservice.algorithmchef.dto.ingredient;
 
-import java.time.LocalDateTime;
+import com.webservice.algorithmchef.model.Ingredient;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,12 +9,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class IngredientResponse {
-
+	
 	private Long id;
-	private  String category;
 	private String name;
-	private LocalDateTime purchaseDate;
-	private LocalDateTime expiredDate;
+	private String category;
+	
+	public IngredientResponse(Ingredient ingredient) {
+		this.id = ingredient.getId();
+		this.name = ingredient.getName();
+		this.category = ingredient.getCategory();
+	}
+
 }

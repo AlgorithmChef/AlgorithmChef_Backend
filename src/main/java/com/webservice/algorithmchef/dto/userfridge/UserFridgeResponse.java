@@ -2,7 +2,7 @@ package com.webservice.algorithmchef.dto.userfridge;
 
 import java.util.List;
 
-import com.webservice.algorithmchef.dto.ingredient.IngredientResponse;
+import com.webservice.algorithmchef.dto.fridgeingredient.FridgeIngredientResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +16,6 @@ import lombok.Setter;
 public class UserFridgeResponse {
 	
 	private Long fridgeId;
-	private List<IngredientResponse> ingredients;
+	private List<FridgeIngredientResponse> ingredients;
 
 }
