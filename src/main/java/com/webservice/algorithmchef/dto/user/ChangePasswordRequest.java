@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 public class ChangePasswordRequest {
 
 	private String password;
+	private Long id;
 }

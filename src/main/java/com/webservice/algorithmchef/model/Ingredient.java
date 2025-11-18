@@ -33,7 +33,7 @@ public class Ingredient {
 	@Column(nullable = false)
 	private String name;
 	
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private String category;
 	
 	@Column(nullable = false)
@@ -44,7 +44,7 @@ public class Ingredient {
 	
 	
 	@OneToMany(mappedBy = "ingredient",orphanRemoval = true,cascade = CascadeType.ALL)
-	private List<UserFridge> userFridges;
+	private List<FridgeIngredient> ingredients;
 	
 	@OneToMany(mappedBy = "ingredient",orphanRemoval = true,cascade = CascadeType.ALL)
 	private List<RecipeIngredient> recipeIngredients;

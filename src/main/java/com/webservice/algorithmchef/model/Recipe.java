@@ -45,6 +45,9 @@ public class Recipe {
 	@Column(nullable = false)
 	private String type;
 	
+	@Column(nullable = false)
+	private double kcal;
+	
 	@OneToMany(mappedBy = "recipe", orphanRemoval = true)
 	private List<RecipeTag> recipeTags;
 	

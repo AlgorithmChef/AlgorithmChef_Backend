@@ -16,7 +16,9 @@ import com.webservice.algorithmchef.dto.user.UserLoginRequest;
 import com.webservice.algorithmchef.dto.user.UserLoginResponse;
 import com.webservice.algorithmchef.dto.user.UserSignUpRequest;
 import com.webservice.algorithmchef.dto.user.UserSignUpResponse;
+import com.webservice.algorithmchef.model.Fridge;
 import com.webservice.algorithmchef.model.User;
+import com.webservice.algorithmchef.repository.FridgeRepository;
 import com.webservice.algorithmchef.repository.UserRepository;
 import com.webservice.algorithmchef.util.JwtUtil;
 
@@ -30,6 +32,7 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtUtil jwtUtil;
 	private final EmailService emailService;
+	private final FridgeRepository fRepository;
 	
 	public UserSignUpResponse signUp(UserSignUpRequest userSignUpRequest) {
 		String userId = userSignUpRequest.getUserId();
@@ -47,7 +50,14 @@ public class AuthService {
 						.role("ROLE_USER")
 						.build();
 		User newUser = userRepository.save(user);
-		return new UserSignUpResponse(newUser);
+		
+		Fridge fridge = Fridge.builder()
+				.user(newUser)
+				.name("나의 냉장고")
+				.build();
+		fRepository.save(fridge);
+		
+		return new UserSignUpResponse(newUser,fridge);
 	}
 	
 	public UserLoginResponse login(UserLoginRequest userLoginRequest) {
