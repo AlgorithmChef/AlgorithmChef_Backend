@@ -18,6 +18,6 @@ public class FridgeIngredientResponse {
 	private String name;
 	private LocalDateTime purchaseDate;
 	private LocalDateTime expiredDate;
-	private Long day;
+	private Long dDay;
 }
 	

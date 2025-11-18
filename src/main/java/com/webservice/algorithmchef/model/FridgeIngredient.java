@@ -41,4 +41,8 @@ public class FridgeIngredient {
 	
 	@Column(nullable = false)
     private LocalDateTime purchaseDate;
+	
+	@Column(nullable = false)
+    private LocalDateTime expiredDate;
+	
 }
