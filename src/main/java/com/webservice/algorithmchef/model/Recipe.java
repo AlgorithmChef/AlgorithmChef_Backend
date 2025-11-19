@@ -35,12 +35,16 @@ public class Recipe {
 	
 	@Lob
 	private String description;
-	
-	@Lob
-	@Column(nullable = false)
-	private String instructions;
-	
-	private String imageUrl;
+
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    private String instructions;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String neededIngredients;
+
+    private String imageUrl;
 	
 	@Column(nullable = false)
 	private String type;
