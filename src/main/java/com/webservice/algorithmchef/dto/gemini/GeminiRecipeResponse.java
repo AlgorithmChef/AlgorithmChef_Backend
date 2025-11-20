@@ -5,9 +5,10 @@ import java.util.List;
 public record GeminiRecipeResponse (
     String name,
     String description,
-    String kcal,
+    double kcal,
     String portions,
     String time,
+    String imageUrl,
     List<String> ingredients,
     List<String> instructions,
     String tip,
