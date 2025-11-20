@@ -73,7 +73,8 @@ public class GeminiRecipeService {
             
             1. 위 재료들을 메인으로 활용하는 레시피 3가지를 추천해줘.
             2. 사용자의 알레르기 유발 재료는 절대 사용하지 마.
-            3. 추가 구매가 필요한 재료를 최소화해줘.
+            3. 사용자의 건강 목표에 반하는 레시피도 절대 추천하지 마.
+            4. 추가 구매가 필요한 재료를 최소화해줘.
             """, ingredientStr);
 
         return generateAndCallGemini(specificPrompt, profile, excludedTitles, false);
