@@ -40,10 +40,6 @@ public class Recipe {
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String instructions;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String neededIngredients;
-
     private String imageUrl;
 	
 	@Column(nullable = false)

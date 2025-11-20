@@ -3,7 +3,7 @@ package com.webservice.algorithmchef.service;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-@Component("recipeDataInitializer")
+@Component
 public class RecipeDataInitializer implements CommandLineRunner {
 
     private final RecipeImportService importService;
