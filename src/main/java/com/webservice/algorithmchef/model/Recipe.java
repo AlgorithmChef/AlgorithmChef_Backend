@@ -30,7 +30,7 @@ public class Recipe {
 	@Column(name="recipe_id")
 	private Long id;
 	
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private String name;
 	
 	@Lob
@@ -46,13 +46,23 @@ public class Recipe {
 	private String type;
 	
 	@Column(nullable = false)
+	@Lob
+	private String neededIngredients;
+	
+	@Column(nullable = false)
 	private double kcal;
 	
-	@OneToMany(mappedBy = "recipe", orphanRemoval = true)
-	private List<RecipeTag> recipeTags;
+	@Column
+	private String tag;
 	
-	@OneToMany(mappedBy = "recipe", orphanRemoval = true)
-	private List<RecipeIngredient> recipeIngredients;
+	@Column
+	private String portions;
+	
+	@Column
+	private String time;
+	
+	@Column
+	private String tip;
 	
 	@OneToMany(mappedBy = "recipe", orphanRemoval = true)
 	private List<RecipeReview> recipeReviews;
