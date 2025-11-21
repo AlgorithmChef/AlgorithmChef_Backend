@@ -46,7 +46,4 @@ public class Ingredient {
 	@OneToMany(mappedBy = "ingredient",orphanRemoval = true,cascade = CascadeType.ALL)
 	private List<FridgeIngredient> ingredients;
 	
-	@OneToMany(mappedBy = "ingredient",orphanRemoval = true,cascade = CascadeType.ALL)
-	private List<RecipeIngredient> recipeIngredients;
-	
 }
