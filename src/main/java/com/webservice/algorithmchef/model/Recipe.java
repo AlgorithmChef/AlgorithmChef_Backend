@@ -64,7 +64,6 @@ public class Recipe {
 	@Column
 	private String tip;
 	
-	
 	@OneToMany(mappedBy = "recipe", orphanRemoval = true)
 	private List<RecipeReview> recipeReviews;
 	
