@@ -90,11 +90,8 @@ public class CookRcpResponse {
             return name;
         }
 
-        public String[] getParts() {
-            if (parts == null || parts.isBlank()) {
-                return new String[0]; // 빈 배열 반환
-            }
-            return parts.split("[,\\n]+");
+        public String getParts() {
+            return parts;
         }
 
         public String getImageUrl() {

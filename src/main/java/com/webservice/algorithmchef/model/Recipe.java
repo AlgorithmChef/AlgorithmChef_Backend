@@ -25,36 +25,46 @@ import lombok.ToString;
 @ToString
 public class Recipe {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="recipe_id")
-	private Long id;
-	
-	@Column(nullable = false, unique = true)
-	private String name;
-	
-	@Lob
-	private String description;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="recipe_id")
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
 
     @Lob
-    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    private String description;
+
+    @Lob
+    @Column(nullable = false)
     private String instructions;
 
     private String imageUrl;
-	
-	@Column(nullable = false)
-	private String type;
-	
-	@Column(nullable = false)
-	private double kcal;
-	
-	@OneToMany(mappedBy = "recipe", orphanRemoval = true)
-	private List<RecipeTag> recipeTags;
-	
-	@OneToMany(mappedBy = "recipe", orphanRemoval = true)
-	private List<RecipeIngredient> recipeIngredients;
-	
-	@OneToMany(mappedBy = "recipe", orphanRemoval = true)
-	private List<RecipeReview> recipeReviews;
-	
+
+    @Column(nullable = false)
+    private String type;
+
+    @Lob
+    @Column(name = "needed_ingredients", columnDefinition = "TEXT")
+    private String neededIngredients;
+
+    @Column(nullable = false)
+    private double kcal;
+
+    @Column
+    private String tag;
+
+    @Column
+    private String portions;
+
+    @Column
+    private String time;
+
+    @Column
+    private String tip;
+
+    @OneToMany(mappedBy = "recipe", orphanRemoval = true)
+    private List<RecipeReview> recipeReviews;
+
 }
