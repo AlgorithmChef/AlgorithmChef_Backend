@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 // (⭐수정) algorithmchef 프로젝트의 의존성으로 변경
-import com.webservice.algorithmchef.service.UserService; 
+import com.webservice.algorithmchef.service.UserService;
 import com.webservice.algorithmchef.util.JwtUtil;
 
 import io.jsonwebtoken.Claims;
@@ -60,13 +60,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             claims = jwtUtil.getClaims(token);
         } catch (Exception e) {
             log.warn("유효하지 않은 JWT 토큰: {}", e.getMessage());
-            // (참고) 여기서 401 Unauthorized를 바로 반환할 수도 있으나, 
+            // (참고) 여기서 401 Unauthorized를 바로 반환할 수도 있으나,
             //       SecurityConfig의 exceptionHandling에서 처리하도록 위임하는 것이 일반적입니다.
         }
 
         // 3. 토큰이 유효하고, 아직 SecurityContext에 인증 정보가 없는 경우
         if (claims != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            
+
             // claims.getSubject()는 User 엔티티의 "userLoginId" (로그인 ID)여야 합니다.
             String userLoginId = claims.getSubject();
             String status = claims.get("status", String.class); // "status" 클레임 추출
@@ -84,11 +84,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     return; // 필터 체인 중단
                 }
             }
-            
+
             // 6. (정상 사용자) 또는 (임시 사용자가 허용된 URL에 접근한 경우)
             //    UserDetails를 DB에서 조회하여 인증 토큰 생성
             UserDetails userDetails = userService.loadUserByUsername(userLoginId);
-            
+
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -97,7 +97,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             log.info("SecurityContext에 인증 정보 저장 완료: {}", userLoginId);
         }
-        
+
         // 8. 다음 필터로 체인 넘김
         filterChain.doFilter(request, response);
     }

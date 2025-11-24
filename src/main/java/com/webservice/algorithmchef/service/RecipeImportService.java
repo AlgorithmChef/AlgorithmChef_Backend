@@ -68,26 +68,21 @@ public class RecipeImportService {
 
                 Recipe r = new Recipe();
                 r.setName(name);
-
-                // description은 당분간 null 유지
                 r.setDescription(null);
-
                 r.setInstructions(item.getInstructions());
                 r.setImageUrl(item.getImageUrl());
-
-                // kcal이 null일 수 있으니까 방어 코드
                 Double kcal = item.getKcalOrNull();
                 r.setKcal(kcal != null ? kcal : 0.0);
 
-                String type = item.getType();
-                if (type == null || type.isBlank()) {
-                    type = "기타";
+                String originalType = item.getType();
+                if (originalType == null || originalType.isBlank()) {
+                    originalType = "기타";
                 }
-                r.setType(type);
-
-                // ✅ 재료 전체 문자열 그대로 저장
+                r.setTag(originalType);
+                r.setType("식품안전나라");
+                r.setTime(null);
+                r.setTip(item.getTip());
                 r.setNeededIngredients(item.getParts());
-
                 recipeRepository.save(r);
                 totalSaved++;
                 System.out.println("    -> DB save complete (current new save: " + totalSaved + ")");
@@ -98,5 +93,4 @@ public class RecipeImportService {
 
         System.out.println("[IMPORT] every import complete. A total " + totalSaved + " new saved");
     }
-
 }

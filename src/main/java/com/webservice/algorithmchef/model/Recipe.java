@@ -37,7 +37,7 @@ public class Recipe {
     private String description;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String instructions;
 
     private String imageUrl;

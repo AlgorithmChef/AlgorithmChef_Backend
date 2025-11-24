@@ -85,6 +85,9 @@ public class CookRcpResponse {
         @JsonProperty("MANUAL19") private String manual19;
         @JsonProperty("MANUAL20") private String manual20;
 
+        @JsonProperty("RCP_NA_TIP")
+        private String naTip;
+
 
         public String getName() {
             return name;
@@ -157,6 +160,9 @@ public class CookRcpResponse {
             }
 
             return String.join("\n", steps);
+        }
+        public String getTip() {
+            return naTip;
         }
     }
 }
