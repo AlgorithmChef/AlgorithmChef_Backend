@@ -9,8 +9,8 @@ public record GeminiRecipeResponse (
     String portions,
     String time,
     String imageUrl,
-    List<String> ingredients,
-    List<String> instructions,
+    String ingredients,
+    String instructions,
     String tip,
     String type
 ) {}
