@@ -163,8 +163,8 @@ public class GeminiRecipeService {
                 "portions": "몇 인분"
                 "time": "예상 조리 시간",
                 "imageUrl" : "완성된 요리 사진 url 주소"
-                "ingredients": "재료1", "재료2",
-                "instructions": "1. ..., 2. ...",
+                "ingredients": "재료1, 재료2, 재료3",
+                "instructions": "1. ..., 2. ..., 3. ...",
                 "tip": "레시피에 관한 기타 참고사항 및 추천사항",
                 "type": "gemini"
               }
