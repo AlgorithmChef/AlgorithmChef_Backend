@@ -28,9 +28,7 @@ public class BoardService {
     private final BoardCommentRepository boardCommentRepository;
     private final UserRepository userRepository;
 
-    /**
-     * 1. 게시글 목록 조회
-     */
+    // 게시글 목록 조회(게시판)
     @Transactional(readOnly = true)
     public BoardPostListResponse getPostList(int page, int size, String sortStr, String filter) {
         Pageable pageable = createPageable(page, size, sortStr);
@@ -54,9 +52,7 @@ public class BoardService {
                 .build();
     }
 
-    /**
-     * 2. 새 게시글 작성
-     */
+    // 게시글 작성
     @Transactional
     public void createPost(BoardPostRequest requestDto, String userId) {
         User user = userRepository.findByUserId(userId)
@@ -72,9 +68,7 @@ public class BoardService {
         boardPostRepository.save(post);
     }
 
-    /**
-     * 3. 게시글 상세 조회 (댓글 페이징 포함)
-     */
+    // 게시글 조회
     @Transactional(readOnly = true)
     public BoardPostResponse getPostDetail(Long postId, int page, int size, String sortStr) {
         BoardPost post = boardPostRepository.findById(postId)
@@ -93,9 +87,7 @@ public class BoardService {
         return BoardPostResponse.of(post, commentDtos, pageInfo);
     }
 
-    /**
-     * 6. 댓글 작성
-     */
+    // 댓글 작성
     @Transactional
     public void createComment(Long postId, BoardCommentRequest requestDto, String userId) {
         User user = userRepository.findByUserId(userId)
@@ -126,12 +118,10 @@ public class BoardService {
         boardCommentRepository.save(comment);
     }
 
-    /**
-     * 5. 대댓글 조회
-     */
+    // 대댓글 조회
     @Transactional(readOnly = true)
     public CommentReplyListResponse getReplies(Long commentId, int page, int size, String sortStr) {
-        // 부모 댓글 존재 여부 확인 (선택사항)
+        // 조회 전, 부모 댓글 존재 여부 확인
         if (!boardCommentRepository.existsById(commentId)) {
             throw new IllegalArgumentException("해당 댓글이 존재하지 않습니다. commentId=" + commentId);
         }
@@ -139,7 +129,6 @@ public class BoardService {
         Pageable pageable = createPageable(page, size, sortStr);
 
         // 부모 댓글 ID를 기준으로 자식 댓글 페이징 조회
-        // Repository에 findByParentComment_CommentId 메서드가 필요하다고 가정합니다.
         Page<BoardComment> replyPage = boardCommentRepository.findByParentComment_CommentId(commentId, pageable);
 
         List<BoardPostResponse.CommentSimple> replyDtos = replyPage.getContent().stream()
@@ -152,6 +141,38 @@ public class BoardService {
                 .replies(replyDtos)
                 .pageInfo(pageInfo)
                 .build();
+    }
+
+    // 게시글 수정
+    @Transactional
+    public void updatePost(Long postId, BoardPostRequest requestDto, String currentUserId) {
+        // 1. 게시글 조회
+        BoardPost post = boardPostRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. postId=" + postId));
+
+        // 2. 작성자 검증 (게시글 작성자 ID vs 현재 로그인한 유저 ID)
+        if (!post.getUser().getUserId().equals(currentUserId)) {
+            throw new IllegalArgumentException("게시글 수정 권한이 없습니다. 본인이 작성한 글만 수정 가능합니다.");
+        }
+
+        // 3. 게시글 업데이트 (JPA Dirty Checking)
+        post.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getCategory());
+    }
+
+    // 게시글 삭제
+    @Transactional
+    public void deletePost(Long postId, String currentUserId) {
+        // 1. 게시글 조회
+        BoardPost post = boardPostRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. postId=" + postId));
+
+        // 2. 작성자 검증
+        if (!post.getUser().getUserId().equals(currentUserId)) {
+            throw new IllegalArgumentException("본인이 작성한 글만 삭제 가능합니다.");
+        }
+
+        // 3. 게시글 삭제 (Cascade 옵션으로 인해 댓글도 자동 삭제됨)
+        boardPostRepository.delete(post);
     }
 
     // Pageable 생성 헬퍼 메서드

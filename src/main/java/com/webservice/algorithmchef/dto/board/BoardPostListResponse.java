@@ -13,8 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// 게시글 목록 반환 객체
 public class BoardPostListResponse {
-    // 목록 조회 시 반환할 래퍼 클래스
+    // 목록 조회 시 반환할 Wrapper 클래스
     private List<BoardPostSimple> posts;
     private PageInfo pageInfo;
 

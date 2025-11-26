@@ -13,20 +13,10 @@ import java.util.List;
 @Repository
 public interface BoardCommentRepository extends JpaRepository<BoardComment, Long> {
 
-    /**
-     * 특정 게시글(PostId)에 달린 모든 댓글을 조회합니다.
-     * 대댓글 계층 구조를 서비스 로직에서 조립하기 위해,
-     * 부모/자식 관계없이 해당 글의 모든 댓글을 작성일 순서(오래된 순)로 가져옵니다.
-     *
-     * @param postId 조회할 게시글의 ID
-     * @return 해당 게시글의 댓글 리스트
-     */
+    // 해당 postId에 달린 모든 댓글 조회
     List<BoardComment> findByPost_PostIdOrderByCreatedAtAsc(Long postId);
 
-    /**
-     * 특정 게시글의 '최상위 댓글(부모가 없는 댓글)'만 페이징 조회합니다.
-     * 게시글 상세 조회 시 댓글 목록 페이징에 사용됩니다.
-     */
+    // 최상위 부모 댓글만 조회
     Page<BoardComment> findByPost_PostIdAndParentCommentIsNull(Long postId, Pageable pageable);
 
     /**
@@ -36,13 +26,6 @@ public interface BoardCommentRepository extends JpaRepository<BoardComment, Long
     @Query("SELECT c FROM BoardComment c JOIN FETCH c.user WHERE c.post.postId = :postId ORDER BY c.createdAt ASC")
     List<BoardComment> findCommentsByPostIdWithUser(@Param("postId") Long postId);
 
-    /**
-     * 특정 부모 댓글의 자식 댓글(대댓글)을 페이징하여 조회합니다.
-     * 대댓글 더보기 기능 등에 사용됩니다.
-     * * @param parentCommentId 부모 댓글 ID (CommentId)
-     *
-     * @param pageable 페이징 정보
-     * @return 대댓글 Page 객체
-     */
+    // 대댓글 페이징 및 조회
     Page<BoardComment> findByParentComment_CommentId(Long parentCommentId, Pageable pageable);
 }

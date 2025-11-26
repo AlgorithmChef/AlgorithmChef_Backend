@@ -13,7 +13,7 @@ public class GeminiConfig {
 
     @Bean
     public Client geminiClient() {
-        // Google Gen AI SDK V1 Client
+
         return Client.builder()
                 .apiKey(apiKey)
                 .build();

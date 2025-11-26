@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// 대댓글 목록 반환 객체
 public class CommentReplyListResponse {
     private List<CommentSimple> replies;
     private PageInfo pageInfo;

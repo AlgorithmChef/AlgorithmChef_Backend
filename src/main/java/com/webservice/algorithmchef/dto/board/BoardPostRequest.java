@@ -20,5 +20,4 @@ public class BoardPostRequest {
     // 게시글 내용 (DB에서는 BLOB이지만, JSON 전송 시 String으로 처리)
     private String content;
 
-    // 참고: user_id는 보통 Controller에서 @AuthenticationPrincipal을 통해 주입받으므로 DTO에서 제외합니다.
 }

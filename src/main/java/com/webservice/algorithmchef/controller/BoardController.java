@@ -24,10 +24,7 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    /**
-     * 1. 게시글 목록 조회
-     * GET /board/posts
-     */
+    // 게시글 목록 조회(게시판)
     @GetMapping("/posts")
     public ResponseEntity<BoardPostListResponse> getPostList(
             @RequestParam(defaultValue = "0") int page,
@@ -39,10 +36,7 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 2. 새 게시글 작성
-     * POST /board/post
-     */
+    // 게시글 작성
     @PostMapping("/post")
     public ResponseEntity<Map<String, String>> createPost(
             @RequestBody BoardPostRequest requestDto,
@@ -55,13 +49,10 @@ public class BoardController {
         boardService.createPost(requestDto, userDetails.getUsername());
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Map.of("message", "새 게시글 작성완료 되었습니다."));
+                .body(Map.of("message", "게시글이 작성되었습니다."));
     }
 
-    /**
-     * 3. 게시글 상세 조회
-     * GET /board/post/{postId}
-     */
+    // 게시글 조회
     @GetMapping("/post/{postId}")
     public ResponseEntity<BoardPostResponse> getPostDetail(
             @PathVariable Long postId,
@@ -77,10 +68,7 @@ public class BoardController {
         }
     }
 
-    /**
-     * 6. 댓글 작성
-     * POST /board/post/{postId}/comment
-     */
+    // 댓글 작성
     @PostMapping("/post/{postId}/comment")
     public ResponseEntity<Map<String, String>> createComment(
             @PathVariable Long postId,
@@ -100,10 +88,7 @@ public class BoardController {
         }
     }
 
-    /**
-     * 5. 대댓글 조회
-     * GET /board/comments/{commentId}/replies
-     */
+    // 대댓글 조회
     @GetMapping("/comments/{commentId}/replies")
     public ResponseEntity<CommentReplyListResponse> getReplies(
             @PathVariable Long commentId,
@@ -116,6 +101,55 @@ public class BoardController {
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    // 게시글 수정
+    @PutMapping("/post/{postId}")
+    public ResponseEntity<Map<String, String>> updatePost(
+            @PathVariable Long postId,
+            @RequestBody BoardPostRequest requestDto,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            // 401 Unauthorized
+        }
+
+        try {
+            // userDetails.getUsername()은 JWT에서 추출한 userId(String)
+            boardService.updatePost(postId, requestDto, userDetails.getUsername());
+
+            return ResponseEntity.ok(Map.of("message", "게시글이 수정되었습니다."));
+        } catch (IllegalArgumentException e) {
+            // 게시글이 없거나, 권한이 없는 경우
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            log.error("게시글 수정 오류", e);
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다."));
+        }
+    }
+
+    // 게시글 삭제
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<Map<String, String>> deletePost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            boardService.deletePost(postId, userDetails.getUsername());
+
+            return ResponseEntity.ok(Map.of("message", "게시글이 삭제되었습니다."));
+        } catch (IllegalArgumentException e) {
+            // 게시글이 없거나, 권한이 없는 경우
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            log.error("게시글 삭제 오류", e);
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다."));
         }
     }
 }

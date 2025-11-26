@@ -31,7 +31,7 @@ public class BoardComment {
 	@JoinColumn(name = "post_id", nullable = false)
 	private BoardPost post;
 
-	// 댓글 작성자 (제공해주신 User 엔티티와 연결)
+	// 댓글 작성자
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
@@ -54,17 +54,15 @@ public class BoardComment {
 	@Column(nullable = false, columnDefinition = "LONGTEXT")
 	private String content;
 
-	// 삭제 여부 (Soft Delete)
+	// 삭제 여부
 	@Column(nullable = false)
 	@ColumnDefault("false")
 	private boolean isDeleted;
 
-	// 생성 시간 (Hibernate)
 	@CreationTimestamp
 	@Column(name = "created_at", updatable = false)
 	private LocalDateTime createdAt;
 
-	// 수정 시간 (Hibernate)
 	@UpdateTimestamp
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
@@ -74,7 +72,7 @@ public class BoardComment {
 		this.content = content;
 	}
 
-	// 댓글 삭제 처리 (상태값 변경)
+	// 댓글 삭제 처리
 	public void changeIsDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}

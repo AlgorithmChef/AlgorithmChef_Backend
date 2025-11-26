@@ -47,17 +47,15 @@ public class BoardPost {
 	@Builder.Default
 	private List<BoardComment> comments = new ArrayList<>();
 
-	// 생성 시간 (Hibernate)
 	@CreationTimestamp
 	@Column(name = "created_at", updatable = false)
 	private LocalDateTime createdAt;
 
-	// 수정 시간 (Hibernate)
 	@UpdateTimestamp
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
 
-	// 게시글 수정 메서드 (Dirty Checking 용)
+	// 게시글 수정 메서드 (Dirty Checking)
 	public void update(String title, String content, String category) {
 		this.title = title;
 		this.content = content;
