@@ -1,6 +1,8 @@
 package com.webservice.algorithmchef.repository;
 
 import com.webservice.algorithmchef.model.BoardComment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,10 +24,10 @@ public interface BoardCommentRepository extends JpaRepository<BoardComment, Long
     List<BoardComment> findByPost_PostIdOrderByCreatedAtAsc(Long postId);
 
     /**
-     * (선택 사항) 특정 게시글의 '최상위 댓글(부모가 없는 댓글)'만 조회합니다.
-     * 대댓글을 지연 로딩(Lazy Loading)으로 가져오거나 페이징이 필요할 때 사용합니다.
+     * 특정 게시글의 '최상위 댓글(부모가 없는 댓글)'만 페이징 조회합니다.
+     * 게시글 상세 조회 시 댓글 목록 페이징에 사용됩니다.
      */
-    List<BoardComment> findByPost_PostIdAndParentCommentIsNullOrderByCreatedAtAsc(Long postId);
+    Page<BoardComment> findByPost_PostIdAndParentCommentIsNull(Long postId, Pageable pageable);
 
     /**
      * (성능 최적화용) 게시글의 댓글을 가져올 때 작성자(User) 정보까지 한 번에 가져옵니다 (Fetch Join).
@@ -33,4 +35,14 @@ public interface BoardCommentRepository extends JpaRepository<BoardComment, Long
      */
     @Query("SELECT c FROM BoardComment c JOIN FETCH c.user WHERE c.post.postId = :postId ORDER BY c.createdAt ASC")
     List<BoardComment> findCommentsByPostIdWithUser(@Param("postId") Long postId);
+
+    /**
+     * 특정 부모 댓글의 자식 댓글(대댓글)을 페이징하여 조회합니다.
+     * 대댓글 더보기 기능 등에 사용됩니다.
+     * * @param parentCommentId 부모 댓글 ID (CommentId)
+     *
+     * @param pageable 페이징 정보
+     * @return 대댓글 Page 객체
+     */
+    Page<BoardComment> findByParentComment_CommentId(Long parentCommentId, Pageable pageable);
 }

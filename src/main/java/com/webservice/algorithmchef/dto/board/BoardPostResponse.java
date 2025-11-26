@@ -1,5 +1,6 @@
 package com.webservice.algorithmchef.dto.board;
 
+import com.webservice.algorithmchef.model.BoardComment;
 import com.webservice.algorithmchef.model.BoardPost;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,31 +15,53 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class BoardPostResponse {
-
     private Long postId;
-    private Long userId;        // 작성자 식별자
-    private String writerName;  // 작성자 닉네임/이름 (User 테이블 조인 필요 시)
+    private String userId;
     private String category;
     private String title;
-    private String content;     // BLOB -> String 변환된 내용
+    private String content;
     private LocalDateTime createdAt;
-    private LocalDateTime modifiedDate;
+    private List<CommentSimple> comments;
+    private PageInfo pageInfo;
 
-    // 해당 게시글에 달린 댓글 목록 (선택사항: 상세 조회 시 같이 내려줄 경우 필요)
-    private List<BoardCommentResponse> comments;
+    @Getter
+    @Builder
+    public static class CommentSimple {
+        private Long commentId;
+        private String userId;
+        private String content;
+        private LocalDateTime createdAt;
+        private boolean isDeleted;
+        private int replyCount;
 
-    // Entity -> DTO 변환 편의 메서드
-    public static BoardPostResponse from(BoardPost post, String writerName, List<BoardCommentResponse> comments) {
+        public static CommentSimple from(BoardComment comment) {
+            // 삭제된 댓글 처리
+            String displayContent = comment.isDeleted() ? "삭제된 댓글입니다." : comment.getContent();
+            // 유저 처리 (삭제된 유저일 경우 로직 추가 가능, 여기선 기본 처리)
+            String displayUserId = comment.getUser() != null ? comment.getUser().getUserId() : "(삭제된 사용자)";
+
+            return CommentSimple.builder()
+                    .commentId(comment.getCommentId())
+                    .userId(displayUserId)
+                    .content(displayContent)
+                    .createdAt(comment.getCreatedAt())
+                    .isDeleted(comment.isDeleted())
+                    // 대댓글 개수 (Children 리스트 사이즈)
+                    .replyCount(comment.getChildren().size())
+                    .build();
+        }
+    }
+
+    public static BoardPostResponse of(BoardPost post, List<CommentSimple> comments, PageInfo pageInfo) {
         return BoardPostResponse.builder()
                 .postId(post.getPostId())
-                .userId(post.getUser().getId()) // User 객체에서 ID 추출 가정
-                .writerName(writerName)
+                .userId(post.getUser().getUserId())
                 .category(post.getCategory())
                 .title(post.getTitle())
-                .content(post.getContent()) // post.getContent()가 String을 반환한다고 가정
+                .content(post.getContent())
                 .createdAt(post.getCreatedAt())
-                .modifiedDate(post.getModifiedDate())
                 .comments(comments)
+                .pageInfo(pageInfo)
                 .build();
     }
 }
