@@ -25,46 +25,46 @@ import lombok.ToString;
 @ToString
 public class Recipe {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="recipe_id")
-	private Long id;
-	
-	@Column(nullable = false)
-	private String name;
-	
-	@Lob
-	private String description;
-	
-	@Lob
-	@Column(nullable = false)
-	private String instructions;
-	
-	private String imageUrl;
-	
-	@Column(nullable = false)
-	private String type;
-	
-	@Column(nullable = false)
-	@Lob
-	private String neededIngredients;
-	
-	@Column(nullable = false)
-	private double kcal;
-	
-	@Column
-	private String tag;
-	
-	@Column
-	private String portions;
-	
-	@Column
-	private String time;
-	
-	@Column
-	private String tip;
-	
-	@OneToMany(mappedBy = "recipe", orphanRemoval = true)
-	private List<RecipeReview> recipeReviews;
-	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="recipe_id")
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Lob
+    private String description;
+
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    private String instructions;
+
+    private String imageUrl;
+
+    @Column(nullable = false)
+    private String type;
+
+    @Lob
+    @Column(name = "needed_ingredients", columnDefinition = "TEXT")
+    private String neededIngredients;
+
+    @Column(nullable = false)
+    private double kcal;
+
+    @Column
+    private String tag;
+
+    @Column
+    private String portions;
+
+    @Column
+    private String time;
+
+    @Column
+    private String tip;
+
+    @OneToMany(mappedBy = "recipe", orphanRemoval = true)
+    private List<RecipeReview> recipeReviews;
+
 }

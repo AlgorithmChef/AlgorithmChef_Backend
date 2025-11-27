@@ -17,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    
-	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 
     @Bean
@@ -34,8 +34,8 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/login", "/auth/signUp", 
-                        		"/auth/findPassword", "/auth/findUserId").permitAll()
+                        .requestMatchers("/auth/login", "/auth/signUp",
+                                "/auth/findPassword", "/auth/findUserId").permitAll()
                         .anyRequest().authenticated());
 
         http

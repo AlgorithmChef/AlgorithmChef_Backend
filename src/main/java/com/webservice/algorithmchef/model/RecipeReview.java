@@ -29,27 +29,27 @@ import lombok.ToString;
 @ToString
 public class RecipeReview {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="review_id")
-	private Long id;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="user_id")
-	private User user;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="recipe_id")
-	private Recipe recipe;
-	
-	@Column(nullable = false)
-	private float rating;
-	
-	@Column
-	@Lob
-	private String content;
-	
-	@CreationTimestamp
-	private LocalDateTime createdAt;
-	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="review_id")
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="recipe_id")
+    private Recipe recipe;
+
+    @Column(nullable = false)
+    private float rating;
+
+    @Column
+    @Lob
+    private String content;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
 }

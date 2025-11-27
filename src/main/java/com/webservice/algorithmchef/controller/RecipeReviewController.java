@@ -17,19 +17,19 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 public class RecipeReviewController {
-	
-	private final RecipeReviewService rService;
-	
-	@PostMapping("/recipe/review")
-	public ResponseEntity<?> makeReview(@RequestBody RecipeReviewRequest request,
-			@AuthenticationPrincipal UserDetails userDetails){
-		try {
-			String userId = userDetails.getUsername();
-			RecipeReviewResponse response = rService.makeReview(request, userId);
-			return ResponseEntity.status(HttpStatus.CREATED).body(response);
-		}catch (IllegalArgumentException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
-	}
+
+    private final RecipeReviewService rService;
+
+    @PostMapping("/recipe/review")
+    public ResponseEntity<?> makeReview(@RequestBody RecipeReviewRequest request,
+                                        @AuthenticationPrincipal UserDetails userDetails){
+        try {
+            String userId = userDetails.getUsername();
+            RecipeReviewResponse response = rService.makeReview(request, userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }

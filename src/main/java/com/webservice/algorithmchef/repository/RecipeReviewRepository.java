@@ -8,5 +8,5 @@ import com.webservice.algorithmchef.model.User;
 
 public interface RecipeReviewRepository extends JpaRepository<RecipeReview, Long> {
 
-	boolean existsByUserAndRecipe(User user, Recipe recipe);
+    boolean existsByUserAndRecipe(User user, Recipe recipe);
 }

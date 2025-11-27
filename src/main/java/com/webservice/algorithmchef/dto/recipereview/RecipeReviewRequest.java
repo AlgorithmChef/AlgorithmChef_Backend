@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RecipeReviewRequest {
 
-	private String name;
-	private float rating;
-	private String content;
+    private String name;
+    private float rating;
+    private String content;
 }
