@@ -22,29 +22,29 @@ public class GeminiRecipeController {
     private final GeminiRecipeService recipeService;
 
     // 1. 유저 성향 및 식습관 기반 추천 (요청주소 /recipes/recommend/prefer)
-    @PostMapping("/prefer")
-    public ResponseEntity<List<GeminiRecipeResponse>> recommendPrefer(@RequestBody PreferRequest request) {
-        log.info("성향 추천 요청 - UserPkId: {}", request.userPkId());
-        return ResponseEntity.ok(
-                recipeService.recommendPrefer(request.userPkId(), request.excludedTitles())
-        );
-    }
+        @PostMapping("/prefer")
+        public ResponseEntity<List<GeminiRecipeResponse>> recommendPrefer(@RequestBody PreferRequest request) {
+            log.info("성향 추천 요청 - userId: {}", request.userId());
+            return ResponseEntity.ok(
+                    recipeService.recommendPrefer(request.userId(), request.excludedTitles())
+            );
+        }
 
     // 2. speech to text 조건 기반 추천 (요청주소 /recipes/recommend/condition)
     @PostMapping("/condition")
     public ResponseEntity<List<GeminiRecipeResponse>> recommendCondition(@RequestBody ConditionRequest request) {
-        log.info("조건 추천 요청 - UserPkId: {}, Condition: {}", request.userPkId(), request.condition());
+        log.info("조건 추천 요청 - userId: {}, Condition: {}", request.userId(), request.condition());
         return ResponseEntity.ok(
-                recipeService.recommendCondition(request.userPkId(), request.condition(), request.excludedTitles())
+                recipeService.recommendCondition(request.userId(), request.condition(), request.excludedTitles())
         );
     }
 
     // 3. 임박재료 기반 추천 (요청주소 /recipes/recommend/expir)
     @PostMapping("/expir")
     public ResponseEntity<List<GeminiRecipeResponse>> recommendExpir(@RequestBody ExpirRequest request) {
-        log.info("재료 추천 요청 - UserPkId: {}", request.userPkId());
+        log.info("재료 추천 요청 - userId: {}", request.userId());
         return ResponseEntity.ok(
-                recipeService.recommendExpir(request.userPkId(), request.ingredients(), request.excludedTitles())
+                recipeService.recommendExpir(request.userId(), request.ingredients(), request.excludedTitles())
         );
     }
 }
