@@ -26,9 +26,9 @@ public class SttController {
     @PostMapping("/stt")
     public ResponseEntity<?> stt(
             @RequestParam("audio") MultipartFile audioFile,
-            @RequestParam("userId") String userIdStr
+            @RequestParam("userId") String userId
     ) {
-        log.info("음성 기반 레시피 추천 요청 - UserId: {}, 파일크기: {} bytes", userIdStr, audioFile.getSize());
+        log.info("음성 기반 레시피 추천 요청 - UserId: {}, 파일크기: {} bytes", userId, audioFile.getSize());
 
         try {
             // 1. 음성 -> 텍스트 변환 (STT)
@@ -41,8 +41,6 @@ public class SttController {
 
             log.info("STT 변환 결과: \"{}\"", convertedText);
 
-            // userId String -> Long 변환
-            Long userId = Long.parseLong(userIdStr);
 
             // 음성 검색은 보통 '새로운 검색'이므로 excludedTitles는 빈 리스트로 전달
             List<String> excludedTitles = Collections.emptyList();
@@ -60,7 +58,7 @@ public class SttController {
             return ResponseEntity.ok(recipes);
 
         } catch (NumberFormatException e) {
-            log.error("UserId 형식 오류: {}", userIdStr, e);
+            log.error("UserId 형식 오류: {}", userId, e);
             return ResponseEntity.badRequest().body("유효하지 않은 사용자 ID입니다.");
         } catch (Exception e) {
             log.error("음성 레시피 추천 중 오류 발생", e);
