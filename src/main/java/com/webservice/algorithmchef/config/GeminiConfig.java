@@ -1,9 +1,11 @@
 package com.webservice.algorithmchef.config;
 
-import com.google.genai.Client;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.google.genai.Client;
+
 
 @Configuration
 public class GeminiConfig {

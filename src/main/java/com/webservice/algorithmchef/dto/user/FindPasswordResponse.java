@@ -2,6 +2,9 @@ package com.webservice.algorithmchef.dto.user;
 
 import com.webservice.algorithmchef.model.User;
 
+import lombok.Getter;
+
+@Getter
 public class FindPasswordResponse {
 
 	private String userId;

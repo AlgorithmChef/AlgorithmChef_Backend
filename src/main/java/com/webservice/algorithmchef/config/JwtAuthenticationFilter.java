@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 1. JWT 헤더가 없거나 'Bearer'가 아닌 경우
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            log.warn("Authorization 헤더가 없거나 Bearer 타입이 아님");
+        	log.debug("헤더에 토큰이 없어 비로그인 상태로 다음 필터 진행: {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }

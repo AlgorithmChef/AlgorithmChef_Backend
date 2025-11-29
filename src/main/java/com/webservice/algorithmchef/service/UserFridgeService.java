@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +17,7 @@ import com.webservice.algorithmchef.dto.fridgeingredient.FridgeIngredientRequest
 import com.webservice.algorithmchef.dto.fridgeingredient.FridgeIngredientResponse;
 import com.webservice.algorithmchef.dto.fridgeingredient.FridgeIngredientUpdateItem;
 import com.webservice.algorithmchef.dto.userfridge.FridgeBatchUpdateRequest;
-import com.webservice.algorithmchef.dto.userfridge.PageUserFridgeResponse;
+// import com.webservice.algorithmchef.dto.userfridge.PageUserFridgeResponse; //
 import com.webservice.algorithmchef.dto.userfridge.UserFridgeRequest;
 import com.webservice.algorithmchef.dto.userfridge.UserFridgeResponse;
 import com.webservice.algorithmchef.model.Fridge;
@@ -73,90 +70,87 @@ public class UserFridgeService {
 	}
 
 	@Transactional
-	public UserFridgeResponse updateIngredientInformation(String userId, FridgeBatchUpdateRequest fRequest) {
-	    
-	    Fridge fridge = findFridge(userId);
+    public UserFridgeResponse updateIngredientInformation(String userId, FridgeBatchUpdateRequest fRequest) {
+        Fridge fridge = findFridge(userId);
+        List<FridgeIngredientUpdateItem> requestItems = fRequest.getIngredients();
+        List<FridgeIngredient> ingredientsToSave = new ArrayList<>();
+        for (FridgeIngredientUpdateItem item : requestItems) {
+            
+            FridgeIngredient existingItem = fIngredientRepository.findById(item.getIngredientId()).orElse(null);
+            
+            if (existingItem != null) {
+                
+                LocalDateTime newExpiredDate = calculateExpireDate(
+                    item.getPurchaseDate(), 
+                    existingItem.getIngredient().getAvgExpiryDays(),
+                    item.getExpiredDate()
+                );
+                existingItem.setPurchaseDate(item.getPurchaseDate());
+                existingItem.setExpiredDate(newExpiredDate);
+                ingredientsToSave.add(existingItem);
+                
+            } else {
+                Ingredient masterIngredient = ingredientRepository.findById(item.getIngredientId()).orElse(null);
+                if (masterIngredient != null) {
+                    LocalDateTime expiredDate = calculateExpireDate(
+                        item.getPurchaseDate(),
+                        masterIngredient.getAvgExpiryDays(),
+                        item.getExpiredDate()
+                    );
 
-	    List<FridgeIngredientUpdateItem> requestItems = fRequest.getIngredients();
-
-	    List<Long> ingredientIds = requestItems.stream()
-	            .map(FridgeIngredientUpdateItem::getIngredientId)
-	            .toList();
-	            
-	    Map<Long, Ingredient> ingredientMap = ingredientRepository.findAllById(ingredientIds).stream()
-	            .collect(Collectors.toMap(Ingredient::getId, i -> i));
-
-	    if (fridge.getIngredients() != null) {
-	        fridge.getIngredients().clear();
-	    }
-	    
-	    List<FridgeIngredient> newFridgeIngredients = new ArrayList<>();
-	    
-	    for (FridgeIngredientUpdateItem item : requestItems) {
-	        Ingredient masterIngredient = ingredientMap.get(item.getIngredientId());
-	        
-	        if (masterIngredient == null) {
-	            throw new IllegalArgumentException("존재하지 않는 식재료 ID입니다: " + item.getIngredientId());
-	        }
-
-	        LocalDateTime expiredDate = calculateExpireDate(
-	        		item.getPurchaseDate(), 
-	        		masterIngredient.getAvgExpiryDays(), 
-	        		item.getExpiredDate()
-	        );
-
-	        FridgeIngredient fridgeIngredient = FridgeIngredient.builder()
-	                .fridge(fridge)
-	                .ingredient(masterIngredient)
-	                .purchaseDate(item.getPurchaseDate())
-	                .expiredDate(expiredDate)
-	                .build();
-	        
-	        newFridgeIngredients.add(fridgeIngredient);
-	    }
-	    
-	    List<FridgeIngredient> savedIngredients = fIngredientRepository.saveAll(newFridgeIngredients);
-	    
-	    return new UserFridgeResponse(
-	            fridge.getId(),
-	            toResponseList(savedIngredients)
-	    );
-	}
+                    FridgeIngredient newItem = FridgeIngredient.builder()
+                            .fridge(fridge)
+                            .ingredient(masterIngredient)
+                            .purchaseDate(item.getPurchaseDate())
+                            .expiredDate(expiredDate)
+                            .build();
+                    
+                    ingredientsToSave.add(newItem);
+                } else {
+                }
+            }
+        }
+        List<FridgeIngredient> savedIngredients = fIngredientRepository.saveAll(ingredientsToSave);
+        return new UserFridgeResponse(
+                fridge.getId(),
+                toResponseList(savedIngredients)
+        );
+    }
 	
-	
-	public PageUserFridgeResponse retrieveAll(String userId, int size, int page){
+	public UserFridgeResponse retrieveAll(String userId){
 		Fridge fridge = findFridge(userId);
-		Pageable pageable = PageRequest.of(page, size, Sort.by("purchaseDate").descending());
 		
-		Page<FridgeIngredient> ingredients = fIngredientRepository.findByFridge(fridge, pageable);
+		Sort sort = Sort.by(Sort.Direction.DESC, "purchaseDate");
 		
-		return new PageUserFridgeResponse(
+		List<FridgeIngredient> ingredients = fIngredientRepository.findByFridge(fridge, sort);
+		
+		return new UserFridgeResponse(
 				fridge.getId(),
-				ingredients.map(this::toFridgeIngredientResponse)
+				toResponseList(ingredients)
 		);
 	}
 	
-	public PageUserFridgeResponse filteredByName(String userId, String name, int size, int page) {
-		Fridge fridge = findFridge(userId);
-		Pageable pageable = PageRequest.of(page, size, Sort.by("purchaseDate").descending());
-		
-		Page<FridgeIngredient> ingredients = fIngredientRepository.findByFridgeAndIngredient_NameContaining(fridge, name, pageable);
-		
-		return new PageUserFridgeResponse(
-				fridge.getId(),
-				ingredients.map(this::toFridgeIngredientResponse)
-		);
-	}
+//	public PageUserFridgeResponse filteredByName(String userId, String name, int size, int page) {
+//		Fridge fridge = findFridge(userId);
+//		Pageable pageable = PageRequest.of(page, size, Sort.by("purchaseDate").descending());
+//		
+//		Page<FridgeIngredient> ingredients = fIngredientRepository.findByFridgeAndIngredient_NameContaining(fridge, name, pageable);
+//		
+//		return new PageUserFridgeResponse(
+//				fridge.getId(),
+//				ingredients.map(this::toFridgeIngredientResponse)
+//		);
+//	}
 	
-	public PageUserFridgeResponse filteredByCategory(String userId, String category, int size, int page) {
+	public UserFridgeResponse filteredByCategory(String userId, String category) {
 		Fridge fridge = findFridge(userId);
-		Pageable pageable = PageRequest.of(page, size, Sort.by("purchaseDate").descending());
+		Sort sort = Sort.by("purchaseDate").descending();
 		
-		Page<FridgeIngredient> ingredients = fIngredientRepository.findByFridgeAndIngredient_Category(fridge, category, pageable);
+		List<FridgeIngredient> ingredients = fIngredientRepository.findByFridgeAndIngredient_Category(fridge, category, sort);
 		
-		return new PageUserFridgeResponse(
+		return new UserFridgeResponse(
 				fridge.getId(),
-				ingredients.map(this::toFridgeIngredientResponse)
+				toResponseList(ingredients)
 		);
 	}
 	
@@ -166,8 +160,11 @@ public class UserFridgeService {
 		
 		FridgeIngredient fridgeIngredient = fIngredientRepository.findByIdAndFridge(request.getIngredientId(), fridge)
 				.orElseThrow(() -> new IllegalArgumentException("해당하는 아이디로 재료 찾을 수 없습니다."));
-		
 		fridgeIngredient.setPurchaseDate(request.getPurchasedDate());
+		LocalDateTime expiredDate = calculateExpireDate(request.getPurchasedDate(), 
+				fridgeIngredient.getIngredient().getAvgExpiryDays(),
+				request.getExpiredDate());
+		fridgeIngredient.setExpiredDate(expiredDate);
 		
 		return new ChangeFridgeIngredientResponse(fridgeIngredient, "업데이트 완료");	
 	}

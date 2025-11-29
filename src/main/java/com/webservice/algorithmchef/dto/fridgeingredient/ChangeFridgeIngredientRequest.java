@@ -11,4 +11,5 @@ public class ChangeFridgeIngredientRequest {
 
 	private Long ingredientId;
 	private LocalDateTime purchasedDate;
+	private LocalDateTime expiredDate;
 }

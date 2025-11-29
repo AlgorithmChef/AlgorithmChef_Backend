@@ -43,6 +43,7 @@ public class GeminiRecipeController {
     @PostMapping("/expir")
     public ResponseEntity<List<GeminiRecipeResponse>> recommendExpir(@RequestBody ExpirRequest request) {
         log.info("재료 추천 요청 - userId: {}", request.userId());
+        log.info("요청한 재료",request);
         return ResponseEntity.ok(
                 recipeService.recommendExpir(request.userId(), request.ingredients(), request.excludedTitles())
         );

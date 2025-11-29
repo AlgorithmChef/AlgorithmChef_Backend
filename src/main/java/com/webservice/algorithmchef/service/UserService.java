@@ -103,8 +103,8 @@ public class UserService implements UserDetailsService{
 	}
 	
 	public MyPageResponse retrieveMyInformation(String userId) {
-		User user = userRepository.findByUserId(userId)
-						.orElseThrow(()-> new IllegalArgumentException("해당 아이디에 적합한 사용자를 찾을 수 없습니다"));
+		User user = userRepository.findByUserIdWithPreference(userId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 아이디에 적합한 사용자를 찾을 수 없습니다"));
 		return new MyPageResponse(user);
 	}
 	
