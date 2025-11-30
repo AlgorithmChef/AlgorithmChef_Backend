@@ -27,10 +27,10 @@ public class BoardController {
     // 게시글 목록 조회(게시판)
     @GetMapping("/posts")
     public ResponseEntity<BoardPostListResponse> getPostList(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "createdAt,desc") String sort,
-            @RequestParam(required = false) String filter
+            @RequestParam(defaultValue = "0",value="page") int page,
+            @RequestParam(defaultValue = "20",value="size") int size,
+            @RequestParam(defaultValue = "createdAt,desc",value="sort") String sort,
+            @RequestParam(required = false,value="filter") String filter
     ) {
         BoardPostListResponse response = boardService.getPostList(page, size, sort, filter);
         return ResponseEntity.ok(response);
@@ -55,10 +55,10 @@ public class BoardController {
     // 게시글 조회
     @GetMapping("/post/{postId}")
     public ResponseEntity<BoardPostResponse> getPostDetail(
-            @PathVariable Long postId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "createdAt,asc") String sort
+            @PathVariable("postId") Long postId,
+            @RequestParam(defaultValue = "0",value="page") int page,
+            @RequestParam(defaultValue = "20",value="size") int size,
+            @RequestParam(defaultValue = "createdAt,asc",value="sort") String sort
     ) {
         try {
             BoardPostResponse response = boardService.getPostDetail(postId, page, size, sort);
@@ -71,7 +71,7 @@ public class BoardController {
     // 댓글 작성
     @PostMapping("/post/{postId}/comment")
     public ResponseEntity<Map<String, String>> createComment(
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @RequestBody BoardCommentRequest requestDto,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
@@ -91,10 +91,10 @@ public class BoardController {
     // 대댓글 조회
     @GetMapping("/comments/{commentId}/replies")
     public ResponseEntity<CommentReplyListResponse> getReplies(
-            @PathVariable Long commentId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "createdAt,asc") String sort
+            @PathVariable("commentId") Long commentId,
+            @RequestParam(defaultValue = "0",value="page") int page,
+            @RequestParam(defaultValue = "10",value="size") int size,
+            @RequestParam(defaultValue = "createdAt,asc",value="sort") String sort
     ) {
         try {
             CommentReplyListResponse response = boardService.getReplies(commentId, page, size, sort);
@@ -107,7 +107,7 @@ public class BoardController {
     // 게시글 수정
     @PutMapping("/post/{postId}")
     public ResponseEntity<Map<String, String>> updatePost(
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @RequestBody BoardPostRequest requestDto,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
@@ -133,7 +133,7 @@ public class BoardController {
     // 게시글 삭제
     @DeleteMapping("/post/{postId}")
     public ResponseEntity<Map<String, String>> deletePost(
-            @PathVariable Long postId,
+    		@PathVariable("postId") Long postId,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         if (userDetails == null) {

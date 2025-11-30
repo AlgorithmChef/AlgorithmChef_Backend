@@ -27,10 +27,12 @@ public class BoardPostListResponse {
         private String createdAt;
         private String category;
         private String content; // 목록 미리보기용
+        private Long postId;
 
         public static BoardPostSimple from(BoardPost post) {
             return BoardPostSimple.builder()
                     .title(post.getTitle())
+                    .postId(post.getPostId())
                     // User 엔티티의 userId (로그인 아이디) 사용
                     .userId(post.getUser().getUserId())
                     // 날짜 포맷팅 (yyyy-MM-dd)
