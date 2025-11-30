@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.webservice.algorithmchef.dto.fridgeingredient.ChangeFridgeIngredientRequest;
 import com.webservice.algorithmchef.dto.fridgeingredient.ChangeFridgeIngredientResponse;
 import com.webservice.algorithmchef.dto.userfridge.FridgeBatchUpdateRequest;
-import com.webservice.algorithmchef.dto.userfridge.PageUserFridgeResponse;
 import com.webservice.algorithmchef.dto.userfridge.UserFridgeRequest;
 import com.webservice.algorithmchef.dto.userfridge.UserFridgeResponse;
 import com.webservice.algorithmchef.service.UserFridgeService;
@@ -44,28 +43,22 @@ public class UserFridgeController {
 	}
 	
 	@GetMapping("/ingredients")
-	public ResponseEntity<?> retrieve(
-			@RequestParam(value="category",required = false)String category,
-			@RequestParam(value="name",required = false)String name,
-			@RequestParam(value="page", defaultValue = "0")int page,
-			@RequestParam(value="size", defaultValue = "10")int size,
-			@AuthenticationPrincipal UserDetails userDetails){
-		try {
-			String userId = userDetails.getUsername();
-			PageUserFridgeResponse response = null;
-			if(category != null) {
-				response = userFridgeService.filteredByCategory(userId, category, size, page);
-			}else if(name != null) {
-				response = userFridgeService.filteredByName(userId, name, size, page);
-			}else {
-				response = userFridgeService.retrieveAll(userId, size, page);				
-			}
-			return ResponseEntity.ok(response);
-		}catch(IllegalArgumentException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
-		
-	}
+    public ResponseEntity<?> retrieve(
+            @RequestParam(value = "category", required = false) String category,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String userId = userDetails.getUsername();
+            UserFridgeResponse response;
+            if (category != null) {
+                response = userFridgeService.filteredByCategory(userId, category);
+            } else {
+                response = userFridgeService.retrieveAll(userId);                
+            }
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 	
 	@PatchMapping("/ingredient/update")
 	public ResponseEntity<?> updatePurchasedDate(@RequestBody ChangeFridgeIngredientRequest request,

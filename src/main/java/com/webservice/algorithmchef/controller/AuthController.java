@@ -53,7 +53,6 @@ public class AuthController {
 		}
 	}
 	
-	@Transactional
 	@PatchMapping("/findPassword")
 	public ResponseEntity<?> findPassword(@RequestBody FindPasswordRequest fPasswordRequest){
 		try {

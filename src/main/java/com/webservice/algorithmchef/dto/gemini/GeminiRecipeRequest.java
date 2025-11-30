@@ -2,6 +2,8 @@ package com.webservice.algorithmchef.dto.gemini;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class GeminiRecipeRequest {
 
     // 1. 성향 기반 추천 요청
@@ -21,8 +23,11 @@ public class GeminiRecipeRequest {
 
     // 3. 임박한 재료 추천 요청
     public record ExpirRequest(
+    		@JsonProperty("userId")
             String userId,
+            @JsonProperty("excludedTitles")
             List<String> excludedTitles,
+            @JsonProperty("ingredients")
             List<String> ingredients // 소비기한 임박 재료
     ) {}
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipes")
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class RecipeSearchController {
 
     private final RecipeService recipeService;
@@ -20,7 +20,7 @@ public class RecipeSearchController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> getRandomRecipe(@RequestParam String ingredient) {
+    public ResponseEntity<?> getRandomRecipe(@RequestParam("ingredient") String ingredient) {
 
         Recipe recipe = recipeService.getRandomRecipeByIngredient(ingredient);
 
@@ -32,7 +32,7 @@ public class RecipeSearchController {
     }
 
     @GetMapping("/search-multi")
-    public ResponseEntity<?> getRandomRecipeMultiple(@RequestParam String ingredients) {
+    public ResponseEntity<?> getRandomRecipeMultiple(@RequestParam("ingredients") String ingredients) {
 
         List<String> ingList =
                 Arrays.stream(ingredients.split(","))
