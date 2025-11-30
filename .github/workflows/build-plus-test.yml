@@ -1,0 +1,63 @@
+name: Extended Java CI with Gradle # build only -> logic test like api call..
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"] 
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Create GCP Key JSON
+        run: |
+          echo "${{ secrets.GCP_KEY_JSON }}" > ./gcp-key.json
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build and Test with Gradle
+        run: ./gradlew clean build # test 수행
+        env: # test용 더미 환경변수 주입
+          JWT_SECRET_KEY: "test-secret"
+          MAIL_USERNAME: "test@gmail.com"
+          MAIL_PASSWORD: "test"
+          DB_HOST: "localhost"
+          DB_NAME: "testdb"
+          DB_USERNAME: "sa"
+          DB_PASSWORD: ""
+          FOOD_SAFETY_KEY: "test"
+          GEMINI_API_KEY: "test"
+          GCP_PROJECT_ID: "test"
+          GCP_PROCESSOR_ID: "test"
+          GOOGLE_APPLICATION_CREDENTIALS: "./gcp-key.json"
+
+      - name: Upload Test Report # 리포트 생성
+        if: always() # 성공/실패 여부와 관계없이 실행
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: build/reports/tests/test/
