@@ -24,6 +24,13 @@ repositories {
 	mavenCentral()
 }
 
+dependencyManagement {
+	imports {
+		// ocr 패키지 관련 라이브러리 버전 자동 제어
+		mavenBom "com.google.cloud:libraries-bom:26.71.0"
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -43,6 +50,10 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'com.google.genai:google-genai:1.0.0' // gemini api
 	implementation 'org.springframework.boot:spring-boot-starter-webflux' // gemini 검색기능
+
+	// ocr에 필요한 document ai api 라이브러리
+	implementation 'com.google.cloud:google-cloud-document-ai'
+	implementation 'com.google.protobuf:protobuf-java-util'
 }
 
 tasks.named('test') {
