@@ -1,5 +1,6 @@
 package com.webservice.algorithmchef.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -14,4 +15,5 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 	Page<Ingredient> findAll(Pageable pageable);
 	Page<Ingredient> findByNameContaining(String name,Pageable pageable);
 	Page<Ingredient> findByCategory(String category,Pageable pageable);
+	List<Ingredient> findByNameContaining(String name);
 }
